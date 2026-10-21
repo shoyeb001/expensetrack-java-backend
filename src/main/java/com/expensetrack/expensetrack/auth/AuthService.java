@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.expensetrack.expensetrack.common.exception.EmailAlreadyExistsException;
 import com.expensetrack.expensetrack.user.User;
 import com.expensetrack.expensetrack.user.UserRepository;
 
@@ -37,7 +38,7 @@ public class AuthService {
         String password = request.password();
         String name = request.name();
         if (userRepository.existsByEmail(email)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "An account with this email already exists");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
 
         User user = new User(
