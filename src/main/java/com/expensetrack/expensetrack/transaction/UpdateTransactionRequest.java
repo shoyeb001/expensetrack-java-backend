@@ -1,0 +1,18 @@
+package com.expensetrack.expensetrack.transaction;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
+public record UpdateTransactionRequest(
+        @NotBlank @Size(max = 100) String title,
+        @NotNull @Positive BigDecimal amount,
+        @NotNull TransactionType transactionType,
+        @NotNull @PastOrPresent LocalDate date) {
+
+}
