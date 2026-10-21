@@ -5,26 +5,29 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import com.expensetrack.expensetrack.common.entity.BaseEntity;
+import com.expensetrack.expensetrack.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-
-@Entity 
-@Table (name = "transactions")
-public class Transaction extends BaseEntity{
+@Entity
+@Table(name = "transactions")
+public class Transaction extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false, length = 100)
-    
+
     private String title;
 
     @Column(nullable = false, precision = 19, scale = 2)
@@ -37,6 +40,10 @@ public class Transaction extends BaseEntity{
     @Column(name = "transaction_date", nullable = false)
     private LocalDate date;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     protected Transaction() {
         // Default constructor for JPA
     }
@@ -48,23 +55,31 @@ public class Transaction extends BaseEntity{
         this.date = date;
     }
 
-    public UUID getId(){
+    public UUID getId() {
         return id;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return title;
     }
 
-    public BigDecimal getAmount(){
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public TransactionType getTransactionType(){
+    public TransactionType getTransactionType() {
         return transactionType;
     }
 
-    public LocalDate getDate(){
+    public LocalDate getDate() {
         return date;
-    }   
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
 }
