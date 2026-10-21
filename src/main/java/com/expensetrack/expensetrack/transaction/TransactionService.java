@@ -85,4 +85,46 @@ public class TransactionService {
                                                 transaction.getUpdatedAt()));
         }
 
+        @Transactional
+        public TransactionResponse update(UUID id, UUID userId, UpdateTransactionRequest request) {
+                Transaction transaction = transactionRepository.findById(id)
+                                .orElseThrow(() -> new IllegalArgumentException(
+                                                "Transaction not found with id: " + id));
+
+                if (!transaction.getUser().getId().equals(userId)) {
+                        throw new IllegalArgumentException(
+                                        "Transaction does not belong to the user with id: " + userId);
+                }
+
+                transaction.setTitle(request.title());
+                transaction.setAmount(request.amount());
+                transaction.setTransactionType(request.transactionType());
+                transaction.setDate(request.date());
+
+                Transaction updatedTransaction = transactionRepository.save(transaction);
+
+                return new TransactionResponse(
+                                updatedTransaction.getId(),
+                                updatedTransaction.getTitle(),
+                                updatedTransaction.getAmount(),
+                                updatedTransaction.getTransactionType(),
+                                updatedTransaction.getDate(),
+                                updatedTransaction.getCreatedAt(),
+                                updatedTransaction.getUpdatedAt());
+        }
+
+        @Transactional
+        public void delete(UUID id, UUID userId) {
+                Transaction transaction = transactionRepository.findById(id)
+                                .orElseThrow(() -> new IllegalArgumentException(
+                                                "Transaction not found with id: " + id));
+
+                if (!transaction.getUser().getId().equals(userId)) {
+                        throw new IllegalArgumentException(
+                                        "Transaction does not belong to the user with id: " + userId);
+                }
+
+                transactionRepository.delete(transaction);
+        }
+
 }

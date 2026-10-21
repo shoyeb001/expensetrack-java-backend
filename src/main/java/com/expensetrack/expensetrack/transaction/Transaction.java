@@ -82,4 +82,20 @@ public class Transaction extends BaseEntity {
     public User getUser() {
         return user;
     }
+
+    public void setTitle(String title){
+        this.title = title;
+    }
+
+    public void setAmount(BigDecimal amount){
+        this.amount = amount;
+    }
+
+    public void setTransactionType(TransactionType transactionType){
+        this.transactionType = transactionType;
+    }
+
+    public void setDate(LocalDate date){
+        this.date = date;
+    }
 }
