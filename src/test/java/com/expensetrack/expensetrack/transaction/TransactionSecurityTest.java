@@ -6,6 +6,7 @@ import com.expensetrack.expensetrack.transaction.TransactionService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(TransactionController.class) // This annotation is used to test the TransactionController class in a Spring
                                          // MVC context
-@Import(SecurityConfig.class) // This annotation is used to import the SecurityConfig class for testing
+@Import({ SecurityConfig.class, ServletWebSecurityAutoConfiguration.class }) // Import SecurityConfig and the auto-configuration that provides HttpSecurity bean
 @TestPropertySource(properties = {
         "jwt.secret-base64=Zm9vYmFyYmF6cXV4cXV4cXV4cXV4cXV4cXV4cXV4cXV4cXV4cXV4cQ==",
 }) // This annotation is used to set the properties for the test, specifically the
