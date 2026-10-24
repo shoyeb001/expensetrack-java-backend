@@ -70,11 +70,17 @@ public class TransactionController {
         return transactionService.update(id, userId, request);
     }
 
-    @DeleteMapping ("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
         UUID userId = UUID.fromString(jwt.getSubject());
         transactionService.delete(id, userId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public TransactionResponse getTransactionById(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
+        UUID userId = UUID.fromString(jwt.getSubject());
+        return transactionService.findById(id, userId);
     }
 
 }

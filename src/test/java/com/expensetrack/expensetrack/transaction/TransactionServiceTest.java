@@ -1,7 +1,9 @@
 package com.expensetrack.expensetrack.transaction;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -9,6 +11,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
+
+import javax.swing.text.html.parser.Entity;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +24,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.expensetrack.expensetrack.user.User;
 import com.expensetrack.expensetrack.user.UserRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @ExtendWith(MockitoExtension.class) // This annotation is used to enable Mockito support in JUnit 5 tests
 public class TransactionServiceTest {
@@ -35,11 +41,13 @@ public class TransactionServiceTest {
 
     private UUID userId;
     private User user;
+    private UUID transactionId;
 
     @BeforeEach
     void setUp() {
         userId = UUID.randomUUID();
         user = new User("sk@test.com", "test@1234", "Test User");
+        transactionId = UUID.randomUUID();
     } // This method is executed before each test case to set up the test data
 
     @Test
@@ -59,8 +67,10 @@ public class TransactionServiceTest {
                                                                                                                          // save
                                                                                                                          // method
 
+        when(transactionRepository.findByIdAndUserId(transactionId, userId)).thenReturn(Optional.empty());
         // act
         transactionService.create(request, userId);
+        assertThrows(EntityNotFoundException.class, () -> transactionService.findById(transactionId, userId));
 
         // assert
         // Verify that the transaction's user is set to the authenticated user before
@@ -73,6 +83,10 @@ public class TransactionServiceTest {
         // captured Transaction object and verify its properties.
         verify(transactionRepository).save(captor.capture());
         Transaction savedTransaction = captor.getValue();
+
+        // verify the service check both transaction id and owner id
+        verify(transactionRepository).findByIdAndUserId(transactionId, userId);
+        verify(transactionRepository, never()).findById(transactionId);
 
         assertSame(user, savedTransaction.getUser(), "The transaction's user should be the authenticated user");
         // assertSame is used to check if the two objects are the same instance. In this

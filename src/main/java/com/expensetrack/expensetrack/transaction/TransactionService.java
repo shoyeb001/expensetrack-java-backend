@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.expensetrack.expensetrack.user.User;
 import com.expensetrack.expensetrack.user.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -125,6 +126,20 @@ public class TransactionService {
                 }
 
                 transactionRepository.delete(transaction);
+        }
+
+        @Transactional
+        public TransactionResponse findById(UUID id, UUID userId){
+                Transaction transaction = transactionRepository.findByIdAndUserId(id, userId).orElseThrow(() -> new EntityNotFoundException("Transaction not found"));
+                return new TransactionResponse(
+                        transaction.getId(),
+                        transaction.getTitle(),
+                        transaction.getAmount(),               
+                        transaction.getTransactionType(),
+                        transaction.getDate(),
+                        transaction.getCreatedAt(),
+                        transaction.getUpdatedAt());
+                
         }
 
 }
