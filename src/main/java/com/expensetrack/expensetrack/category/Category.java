@@ -34,10 +34,10 @@ public class Category extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category_type", nullable = false, length = 20)
-    private TransactionType category_type;
+    private TransactionType categoryType;
 
-    @Column(name = "is_System", nullable = false)
-    private boolean is_system;
+    @Column(name = "is_system", nullable = false)
+    private boolean isSystem;
 
     @Column(length = 50)
     private String icon;
@@ -49,13 +49,13 @@ public class Category extends BaseEntity {
     public Category(
             User user,
             String name,
-            TransactionType category_type,
-            boolean is_system,
+            TransactionType categoryType,
+            boolean isSystem,
             String icon) {
         this.user = user;
         this.name = name;
-        this.category_type = category_type;
-        this.is_system = is_system;
+        this.categoryType = categoryType;
+        this.isSystem = isSystem;
         this.icon = icon;
     }
 
@@ -71,16 +71,24 @@ public class Category extends BaseEntity {
         return name;
     }
 
+    public TransactionType getCategoryType() {
+        return categoryType;
+    }
+
     public TransactionType getType() {
-        return category_type;
+        return categoryType;
     }
 
     public String getIcon() {
         return icon;
     }
 
+    public boolean isSystem() {
+        return isSystem;
+    }
+
     public boolean getSystem() {
-        return is_system;
+        return isSystem;
     }
 
 }

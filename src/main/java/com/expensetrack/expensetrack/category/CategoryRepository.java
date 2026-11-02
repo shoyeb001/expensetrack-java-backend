@@ -24,30 +24,39 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
         // TransactionType userType);
 
         // Check whether a custom category already exists.
-        boolean existsByUser_IdAndNameIgnoreCaseAndCategory_type(
+        boolean existsByUserIdAndNameIgnoreCaseAndCategoryType(
                         UUID userId,
                         String name,
                         TransactionType categoryType);
 
         // Find a category only if it is system-owned or belongs to the user.
-        Optional<Category> findByIdAndSystemTrueOrIdAndUser_Id(
+        @Query("""
+                        SELECT c FROM Category c
+                        WHERE c.id = :id
+                        AND (c.isSystem = true OR c.user.id = :userId)
+                        """)
+        Optional<Category> findByIdAndAvailableToUser(
+                        @Param("id") UUID id,
+                        @Param("userId") UUID userId);
+
+        Optional<Category> findByIdAndIsSystemTrueOrIdAndUserId(
                         UUID systemCategoryId,
                         UUID customCategoryId,
                         UUID userId);
 
         @Query("""
                         SELECT c FROM Category c
-                        WHERE c.is_system = true OR c.user.id = :userId
-                        ORDER BY c.category_type, c.name
+                        WHERE c.isSystem = true OR c.user.id = :userId
+                        ORDER BY c.categoryType, c.name
                         """)
         List<Category> findAvailableCategoriesForUser(
                         @Param("userId") UUID userId);
 
         @Query("""
-                            SELECT c FROM Category c
-                            WHERE (c.system = true OR c.user.id = :userId)
-                            AND c.category_type = :type
-                            ORDER BY c.name
+                        SELECT c FROM Category c
+                        WHERE (c.isSystem = true OR c.user.id = :userId)
+                        AND c.categoryType = :type
+                        ORDER BY c.name
                         """)
         List<Category> findAvailableToUserByType(
                         @Param("userId") UUID userId,

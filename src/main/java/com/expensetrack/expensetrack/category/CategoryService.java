@@ -33,7 +33,7 @@ public class CategoryService {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
         String name = request.name().trim();
 
-        boolean exists = categoryRepository.existsByUser_IdAndNameIgnoreCaseAndCategory_type(userId, name,
+        boolean exists = categoryRepository.existsByUserIdAndNameIgnoreCaseAndCategoryType(userId, name,
                 request.category_type());
 
         if (exists) {
